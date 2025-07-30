@@ -1,0 +1,7 @@
+{
+    "MerchantRequestID": "0fe6-4d7d-bae0-d56f165552b613255",
+    "CheckoutRequestID": "ws_CO_230720251959582790405253",
+    "ResponseCode": "0",
+    "ResponseDescription": "Success. Request accepted for processing",
+    "CustomerMessage": "Success. Request accepted for processing"
+}
