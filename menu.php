@@ -2,14 +2,14 @@
 session_start();
 include('db.php');
 
-// Initialize cart if needed
+// Initialize cart
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
 $alertMessage = "";
 
-// Fetch products from DB
+// Fetch products
 $products = $conn->query("SELECT * FROM products")->fetch_all(MYSQLI_ASSOC);
 
 // Add to cart
@@ -18,7 +18,7 @@ if (isset($_POST['add_to_cart'])) {
     $productPrice = $_POST['product_price'];
     $productImage = $_POST['product_image'];
 
-    // Get current stock
+    // Get stock
     $stmt = $conn->prepare("SELECT stock_quantity FROM products WHERE name = ?");
     $stmt->bind_param("s", $productName);
     $stmt->execute();
@@ -27,9 +27,8 @@ if (isset($_POST['add_to_cart'])) {
 
     if ($product && $product['stock_quantity'] > 0) {
         $found = false;
-
         foreach ($_SESSION['cart'] as &$item) {
-            if ($item['name'] == $productName) {
+            if ($item['name'] === $productName) {
                 if ($item['quantity'] < $product['stock_quantity']) {
                     $item['quantity'] += 1;
                     $alertMessage = "$productName quantity increased.";
@@ -48,14 +47,14 @@ if (isset($_POST['add_to_cart'])) {
                 'image' => $productImage,
                 'quantity' => 1
             ];
-            $alertMessage = "$productName added to cart!";
+            $alertMessage = "$productName added to cart.";
         }
     } else {
         $alertMessage = "$productName is out of stock.";
     }
 }
 
-// Handle checkout - reduce stock
+// Handle checkout
 if (isset($_GET['checkout']) && $_GET['checkout'] === 'true') {
     foreach ($_SESSION['cart'] as $item) {
         $stmt = $conn->prepare("UPDATE products SET stock_quantity = stock_quantity - ? WHERE name = ?");
@@ -77,6 +76,7 @@ if (isset($_GET['checkout']) && $_GET['checkout'] === 'true') {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+
 <?php if (!empty($alertMessage)): ?>
 <script>
     alert("<?= htmlspecialchars($alertMessage) ?>");
@@ -116,9 +116,10 @@ if (isset($_GET['checkout']) && $_GET['checkout'] === 'true') {
                     <p><strong>In Stock:</strong> <?= $product['stock_quantity'] ?></p>
                     <form method="POST">
                         <input type="hidden" name="product_name" value="<?= htmlspecialchars($product['name']) ?>">
-                        <input type="hidden" name="product_price" value="<?= $product['amount'] ?>">
+                        <input type="hidden" name="product_price" value="<?= htmlspecialchars($product['amount']) ?>">
                         <input type="hidden" name="product_image" value="<?= htmlspecialchars($product['image']) ?>">
-                        <button class="add-to-cart" type="submit" name="add_to_cart"
+                        <button type="submit" name="add_to_cart"
+                            class="add-to-cart"
                             <?= $product['stock_quantity'] <= 0 ? 'disabled style="background:gray;"' : '' ?>>
                             <?= $product['stock_quantity'] <= 0 ? 'Out of Stock' : '<i class="fas fa-shopping-cart"></i> Cart' ?>
                         </button>

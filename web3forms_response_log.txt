@@ -50,3 +50,23 @@
   "success": false,
   "message": "This method is not allowed. Please contact support for review."
 }
+{
+  "success": false,
+  "message": "This method is not allowed. Please contact support for review."
+}
+{
+  "success": false,
+  "message": "This method is not allowed. Please contact support for review."
+}
+{
+  "success": false,
+  "message": "This method is not allowed. Please contact support for review."
+}
+{
+  "success": false,
+  "message": "This method is not allowed. Please contact support for review."
+}
+{
+  "success": false,
+  "message": "This method is not allowed. Please contact support for review."
+}
